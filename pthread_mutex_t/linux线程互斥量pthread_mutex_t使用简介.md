@@ -65,7 +65,7 @@ pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER
 
 ​		锁操作包括`加锁pthread_mutex_lock()、解锁pthread_mutex_unlock()、尝试加锁pthread_mutex_trylock`。
 
-```
+```c++
 int pthread_mutex_lock(pthread_mutex_t *mutex);//加锁
 
 int pthread_mutex_unlock(pthread_mutex_t *mutex);//解锁
