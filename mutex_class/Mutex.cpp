@@ -18,7 +18,7 @@ int Mutex:: Mutex_unlock() {
 /*Mutex的嵌套类Autolock初始化时调用构造函数抢占锁，
 退出程序块时调用析构函数释放线程锁
 */
-Mutex::AutoLock::AutoLock(Mutex& mtxp):refmtx(mtxp) {
+Mutex::AutoLock:: AutoLock(Mutex& mtxp):refmtx(mtxp) {
     refmtx.Mutex_lock();
 }
 Mutex::AutoLock::~AutoLock() {
