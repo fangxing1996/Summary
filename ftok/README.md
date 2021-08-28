@@ -52,4 +52,4 @@ int main(int argc, char** argv) {
 
 ![Image text](http://r.photo.store.qq.com/psc?/V52JW28g11pzg042wNGX2SRazK149khx/45NBuzDIW489QBoVep5mcbs93NZHfRxcSV43ABQ9jZZiydmQfrWtCIJwUxPRZlRaFKNCqQBn1VdbWUcja.TpdAyFE9h1L1svNAAzf.WpSXk!/r)
 
-​	由输出结果可以观察到，函数`ftok`返回的32bit的key值由3个部分先后组成：proj_id的低8bits， st_dev的低位置8bits以及st_ino的低位16bits。
+​	由输出结果可以观察到，函数`ftok`返回的32bit的key值由3个部分先后组成：proj_id的低8bits， st_dev的低位8bits以及st_ino的低位16bits。
