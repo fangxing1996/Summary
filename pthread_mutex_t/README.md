@@ -22,6 +22,55 @@
 
 ​		不能预期以上3个步骤在一个总线周期内完成，所以也就不能指望多线程程序如预期那样运行。
 
+## 实验
+
+`main.cpp`代码如下：
+
+```c++
+//main.cpp
+#include <iostream>
+#include <pthread.h>
+#include <unistd.h>
+using namespace std;
+
+int tickets = 20;//共享资源，票的数量为20
+
+
+void* threadFunc(void* arg){
+    int tmp = *((int*)arg);
+    cout << tmp << "th" << endl;
+
+    while(tickets > 0){
+        cout << tickets << endl;
+        tickets--;
+        sleep(0.5);
+    }
+    return NULL;
+}
+
+
+int main(){
+    int num = 3;
+    pthread_t pid[num];
+    int arg[num];
+    for(int i = 0; i < num; i++){
+        arg[i] = i;
+        pthread_create(&pid[i], NULL, threadFunc, (void*)&arg[i]);//创建3个线程卖票
+    }
+    sleep(5);
+    for(int i = 0; i < num; i++){
+        pthread_join(pid[i], NULL);
+    }
+    return 0;
+}
+```
+
+​	输入`g++ main.cpp -lpthread -o main`编译源程序，输入`./main`执行，输出结果如下：
+
+![Image text](http://r.photo.store.qq.com/psc?/V52JW28g11pzg042wNGX2SRazK149khx/45NBuzDIW489QBoVep5mcbmPsNby*32MnAZdBDgq17KOw2l99aokkaGD4IwxQ4E4kyUhN0AA1xNgvqOuYcJ*oqgZt0wTJ5avtSX2y0P2s5Y!/r)
+
+​	由于用于卖票的3个线程对共享资源`tickets`的访问没有实现互斥，导致第20张票卖出去3次，重复卖票，20张票，卖出去22张，这显示是错误的。
+
 ## 开始使用线程锁
 
 ### 互斥量
@@ -72,8 +121,3 @@ int pthread_mutex_unlock(pthread_mutex_t *mutex);//解锁
 
 int pthread_mutex_trylock(pthread_mutex_t *mutex);//尝试加锁
 ```
-
-
-
-
-
