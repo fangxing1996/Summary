@@ -121,3 +121,45 @@ int pthread_mutex_unlock(pthread_mutex_t *mutex);//解锁
 
 int pthread_mutex_trylock(pthread_mutex_t *mutex);//尝试加锁
 ```
+
+## 子进程对互斥锁状态的继承
+
+`main.cpp`代码如下：
+
+```c++
+#include <iostream>
+#include <unistd.h>
+#include <pthread.h>
+#include <stdio.h>
+using namespace std;
+int main(){
+    pthread_mutex_t mtx;
+    pthread_mutex_init(&mtx, NULL);
+    pid_t pt;
+    pthread_mutex_lock(&mtx);
+    pt = fork();
+    if(pt > 0){
+        cout << "Father process" << endl;
+        sleep(4);
+        pthread_mutex_unlock(&mtx);
+        sleep(4);
+        pthread_mutex_destroy(&mtx);
+        
+    }
+    else if(pt == 0){
+        cout << "Child process" << endl;
+        pthread_mutex_lock(&mtx);//子进程继承了锁locked状态，陷入死锁
+        cout << "lock successful" << endl;
+    }
+    else{
+        perror("fork error");
+    }
+    return 0;
+}
+```
+
+​	子进程继承了互斥锁`mtx`被锁住的状态，尝试对`mtx`加锁时陷入死锁，输出结果如下：
+
+![Image text](http://r.photo.store.qq.com/psc?/V52JW28g11pzg042wNGX2SRazK149khx/45NBuzDIW489QBoVep5mcSB23ir7TGn6iszNIJ8CN6autZ14DE8JxSVdtcAiVsdj6AaQZdPjQQrT0JEtM7k8Dphl.lnpnpqLaLgzjO.2r6k!/r)
+
+​	子进程陷入死锁，即使在父进程睡眠4秒后释放锁，子进程还是不能进行加锁操作，因为fork之后子进程对父进程的动作是不可见的，因此子进程陷入了永远的阻塞状态。
